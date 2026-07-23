@@ -2,14 +2,14 @@
 PetPals
 Personal AI Executive Assistant
 
-Entry point da aplicação.
+Ponto de entrada da aplicação.
 """
 
 from app.core.startup import startup
 
 
-def main():
-    """Ponto de entrada da aplicação."""
+def main() -> None:
+    """Executa o arranque do PetPals."""
     startup()
 
 

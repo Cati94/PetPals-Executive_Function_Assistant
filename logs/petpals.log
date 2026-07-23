@@ -1,0 +1,15 @@
+2026-07-23 20:40:36.306 | INFO     | __main__:<module>:3 - PetPals iniciado.
+2026-07-23 20:40:36.306 | SUCCESS  | __main__:<module>:4 - Tudo operacional.
+2026-07-23 20:40:36.306 | WARNING  | __main__:<module>:5 - Este é apenas um teste.
+2026-07-23 20:40:36.306 | ERROR    | __main__:<module>:6 - Mensagem de erro de teste.
+2026-07-23 20:56:52.453 | INFO     | __main__:<module>:3 - PetPals iniciado.
+2026-07-23 20:56:52.454 | SUCCESS  | __main__:<module>:4 - Tudo operacional.
+2026-07-23 20:56:52.454 | WARNING  | __main__:<module>:5 - Este é apenas um teste.
+2026-07-23 20:56:52.454 | ERROR    | __main__:<module>:6 - Mensagem de erro de teste.
+2026-07-23 21:01:50.757 | INFO     | __main__:<module>:3 - PetPals iniciado.
+2026-07-23 21:01:50.757 | SUCCESS  | __main__:<module>:4 - Tudo operacional.
+2026-07-23 21:01:50.758 | WARNING  | __main__:<module>:5 - Este é apenas um teste.
+2026-07-23 21:01:50.758 | ERROR    | __main__:<module>:6 - Mensagem de erro de teste.
+2026-07-23 21:23:09.094 | INFO     | app.core.startup:startup:14 - Loading configuration...
+2026-07-23 21:23:09.094 | SUCCESS  | app.core.startup:startup:15 - Configuration loaded
+2026-07-23 21:23:09.094 | SUCCESS  | app.core.startup:startup:17 - PetPals is ready.
