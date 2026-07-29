@@ -1,28 +1,19 @@
 from app.database.database import initialize_database
-from app.database.models import (
-    Task,
-    Priority,
-    EnergyLevel,
-)
 from app.database.repositories.task_repository import TaskRepository
+from app.database.models import Priority, EnergyLevel
 
 initialize_database()
 
 repo = TaskRepository()
 
-task = Task(
+repo.create(
     title="Estudar SQLAlchemy",
-    description="Aprender Repository Pattern",
+    description="Continuar o PetPals",
     priority=Priority.HIGH,
     energy_level=EnergyLevel.MEDIUM,
-    estimated_minutes=60,
+    estimated_minutes=45,
+    context="computer",
 )
 
-repo.create(task)
-
-print("ID:", task.id)
-
-tasks = repo.list_all()
-
-for item in tasks:
-    print(item.id, item.title)
+for task in repo.list_all():
+    print(task.id, task.title)

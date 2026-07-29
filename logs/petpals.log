@@ -38,3 +38,26 @@
 2026-07-29 16:29:57.822 | INFO     | app.core.startup:startup:12 - Connecting database...
 2026-07-29 16:29:58.621 | SUCCESS  | app.core.startup:startup:14 - Database connected
 2026-07-29 16:29:58.622 | SUCCESS  | app.core.startup:startup:16 - PetPals is ready.
+2026-07-29 17:02:34.269 | INFO     | test_PetLogger:<module>:3 - PetPals iniciado.
+2026-07-29 17:02:34.269 | SUCCESS  | test_PetLogger:<module>:4 - Tudo operacional.
+2026-07-29 17:02:34.269 | WARNING  | test_PetLogger:<module>:5 - Este é apenas um teste.
+2026-07-29 17:02:34.270 | ERROR    | test_PetLogger:<module>:6 - Mensagem de erro de teste.
+2026-07-29 17:02:34.273 | INFO     | test_logger:<module>:3 - PetPals iniciado.
+2026-07-29 17:02:34.273 | SUCCESS  | test_logger:<module>:4 - Tudo operacional.
+2026-07-29 17:02:34.273 | WARNING  | test_logger:<module>:5 - Este é apenas um teste.
+2026-07-29 17:02:34.273 | ERROR    | test_logger:<module>:6 - Mensagem de erro de teste.
+2026-07-29 17:05:35.153 | INFO     | app.core.startup:startup:9 - Loading configuration...
+2026-07-29 17:05:35.154 | SUCCESS  | app.core.startup:startup:10 - Configuration loaded
+2026-07-29 17:05:35.154 | INFO     | app.core.startup:startup:12 - Connecting database...
+2026-07-29 17:05:35.162 | SUCCESS  | app.core.startup:startup:14 - Database connected
+2026-07-29 17:05:35.162 | SUCCESS  | app.core.startup:startup:16 - PetPals is ready.
+2026-07-29 17:09:08.853 | INFO     | app.core.startup:startup:9 - Loading configuration...
+2026-07-29 17:09:08.853 | SUCCESS  | app.core.startup:startup:10 - Configuration loaded
+2026-07-29 17:09:08.853 | INFO     | app.core.startup:startup:12 - Connecting database...
+2026-07-29 17:09:08.854 | SUCCESS  | app.core.startup:startup:14 - Database connected
+2026-07-29 17:09:08.855 | SUCCESS  | app.core.startup:startup:16 - PetPals is ready.
+2026-07-29 17:09:08.856 | INFO     | app.core.startup:startup:9 - Loading configuration...
+2026-07-29 17:09:08.856 | SUCCESS  | app.core.startup:startup:10 - Configuration loaded
+2026-07-29 17:09:08.856 | INFO     | app.core.startup:startup:12 - Connecting database...
+2026-07-29 17:09:08.856 | SUCCESS  | app.core.startup:startup:14 - Database connected
+2026-07-29 17:09:08.856 | SUCCESS  | app.core.startup:startup:16 - PetPals is ready.
