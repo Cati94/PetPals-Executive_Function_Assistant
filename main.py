@@ -6,9 +6,9 @@ Ponto de entrada da aplicação.
 """
 
 from app.core.startup import startup
+from app.planner.planner import Planner
 from app.ui.menu import Menu
 from app.user.user_service import UserService
-from app.planner.planner import Planner
 
 
 def main() -> None:

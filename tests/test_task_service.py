@@ -1,5 +1,5 @@
 from app.database.database import initialize_database
-from app.database.models import Priority, EnergyLevel
+from app.database.models import EnergyLevel, Priority
 from app.services.task_service import TaskService
 
 initialize_database()

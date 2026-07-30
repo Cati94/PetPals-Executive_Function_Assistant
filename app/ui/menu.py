@@ -1,5 +1,5 @@
+from app.database.models import EnergyLevel, Priority
 from app.services.task_service import TaskService
-from app.database.models import Priority, EnergyLevel
 
 
 class Menu:
@@ -73,13 +73,9 @@ class Menu:
             EnergyLevel.MEDIUM,
         )
 
-        estimated_minutes = int(
-            input("\nTempo estimado (min): ")
-        )
+        estimated_minutes = int(input("\nTempo estimado (min): "))
 
-        context = input(
-            "Contexto (computador, casa, rua...): "
-        )
+        context = input("Contexto (computador, casa, rua...): ")
 
         task = self.task_service.create_task(
             title=title,
@@ -102,7 +98,4 @@ class Menu:
         print("\n📋 Tarefas:")
 
         for task in tasks:
-            print(
-                f"{task.id} - {task.title} "
-                f"({task.status.value})"
-            )
+            print(f"{task.id} - {task.title} " f"({task.status.value})")

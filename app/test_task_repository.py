@@ -1,6 +1,6 @@
 from app.database.database import initialize_database
+from app.database.models import EnergyLevel, Priority
 from app.database.repositories.task_repository import TaskRepository
-from app.database.models import Priority, EnergyLevel
 
 initialize_database()
 

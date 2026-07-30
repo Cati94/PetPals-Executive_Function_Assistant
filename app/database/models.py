@@ -5,12 +5,9 @@ Modelos da base de dados do PetPals.
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import DateTime
+from sqlalchemy import DateTime, Integer, String
 from sqlalchemy import Enum as SqlEnum
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.database import Base
 

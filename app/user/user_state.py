@@ -25,6 +25,7 @@ class Focus(Enum):
     HIGH = 4
     VERY_HIGH = 5
 
+
 @dataclass
 class UserState:
     energy: Energy = Energy.NORMAL

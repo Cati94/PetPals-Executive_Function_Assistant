@@ -1,10 +1,6 @@
 from sqlalchemy import select
 
-from app.database.models import (
-    Task,
-    Priority,
-    EnergyLevel,
-)
+from app.database.models import EnergyLevel, Priority, Task
 from app.database.session import get_session
 
 
@@ -58,3 +54,26 @@ class TaskRepository:
         with get_session() as session:
             session.delete(task)
             session.commit()
+
+    def get_pending_tasks(self):
+        """Obtém todas as tarefas pendentes."""
+
+        return self.list_all()
+
+
+class TaskScorer:
+
+    def score(self, task, state):
+
+        score = 0
+
+        if task.priority == Priority.HIGH:
+            score += 40
+
+        elif task.priority == Priority.MEDIUM:
+            score += 20
+
+        else:
+            score += 10
+
+        return score

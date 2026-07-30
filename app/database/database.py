@@ -9,14 +9,18 @@ from sqlalchemy.orm import DeclarativeBase
 
 from app.core.config import settings
 
+
 class Base(DeclarativeBase):
     """Classe base para todos os modelos."""
+
     pass
+
 
 engine = create_engine(
     settings.DATABASE_URL,
     echo=False,
 )
+
 
 def initialize_database() -> None:
     """Inicializa a base de dados."""
@@ -24,6 +28,5 @@ def initialize_database() -> None:
     Path("data/database").mkdir(parents=True, exist_ok=True)
 
     # Importar modelos apenas aqui
-    from app.database import models
 
     Base.metadata.create_all(bind=engine)

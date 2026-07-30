@@ -15,9 +15,7 @@ class SystemInfoRepository:
     def set(self, key: str, value: str):
         with get_session() as session:
 
-            info = session.scalar(
-                select(SystemInfo).where(SystemInfo.key == key)
-            )
+            info = session.scalar(select(SystemInfo).where(SystemInfo.key == key))
 
             if info is None:
                 info = SystemInfo(
