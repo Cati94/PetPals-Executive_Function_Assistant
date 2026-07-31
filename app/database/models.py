@@ -5,11 +5,23 @@ Modelos da base de dados do PetPals.
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import DateTime, Integer, String
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy import Enum as SqlEnum
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.database import Base
+
+
+# ==========================================================
+# ENUMS
+# ==========================================================
 
 
 class Priority(str, Enum):
@@ -30,6 +42,11 @@ class TaskStatus(str, Enum):
     DONE = "done"
 
 
+# ==========================================================
+# SYSTEM INFO
+# ==========================================================
+
+
 class SystemInfo(Base):
     __tablename__ = "system_info"
 
@@ -43,6 +60,48 @@ class SystemInfo(Base):
     value: Mapped[str] = mapped_column(
         String(255),
     )
+
+
+# ==========================================================
+# PROJECT
+# ==========================================================
+
+
+class Project(Base):
+    __tablename__ = "projects"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    name: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+    )
+
+    description: Mapped[str] = mapped_column(
+        Text,
+        default="",
+    )
+
+    active: Mapped[bool] = mapped_column(
+        Boolean,
+        default=True,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+    )
+
+    tasks = relationship(
+        "Task",
+        back_populates="project",
+        cascade="all, delete-orphan",
+    )
+
+
+# ==========================================================
+# TASK
+# ==========================================================
 
 
 class Task(Base):
@@ -93,4 +152,14 @@ class Task(Base):
     completed_at: Mapped[datetime | None] = mapped_column(
         DateTime,
         nullable=True,
+    )
+
+    project_id: Mapped[int | None] = mapped_column(
+        ForeignKey("projects.id"),
+        nullable=True,
+    )
+
+    project = relationship(
+        "Project",
+        back_populates="tasks",
     )

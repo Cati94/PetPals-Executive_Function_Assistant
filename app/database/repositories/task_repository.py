@@ -1,6 +1,13 @@
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 
-from app.database.models import EnergyLevel, Priority, Task
+from app.database.models import (
+    EnergyLevel,
+    Priority,
+    Project,
+    Task,
+    TaskStatus,
+)
 from app.database.session import get_session
 
 
@@ -15,6 +22,7 @@ class TaskRepository:
         energy_level: EnergyLevel = EnergyLevel.MEDIUM,
         estimated_minutes: int = 30,
         context: str = "general",
+        project: Project | None = None,
     ) -> Task:
         """Cria e guarda uma nova tarefa."""
 
@@ -25,27 +33,48 @@ class TaskRepository:
             energy_level=energy_level,
             estimated_minutes=estimated_minutes,
             context=context,
+            project=project,
         )
 
         with get_session() as session:
             session.add(task)
             session.commit()
             session.refresh(task)
-
             return task
 
     def get_by_id(self, task_id: int) -> Task | None:
         """Obtém uma tarefa pelo ID."""
 
         with get_session() as session:
-            stmt = select(Task).where(Task.id == task_id)
+            stmt = (
+                select(Task).options(joinedload(Task.project)).where(Task.id == task_id)
+            )
+
             return session.scalar(stmt)
 
     def list_all(self) -> list[Task]:
         """Lista todas as tarefas."""
 
         with get_session() as session:
-            stmt = select(Task).order_by(Task.created_at)
+
+            stmt = (
+                select(Task).options(joinedload(Task.project)).order_by(Task.created_at)
+            )
+
+            return list(session.scalars(stmt).all())
+
+    def get_pending_tasks(self) -> list[Task]:
+        """Obtém todas as tarefas pendentes."""
+
+        with get_session() as session:
+
+            stmt = (
+                select(Task)
+                .options(joinedload(Task.project))
+                .where(Task.status == TaskStatus.TODO)
+                .order_by(Task.priority)
+            )
+
             return list(session.scalars(stmt).all())
 
     def delete(self, task: Task) -> None:
@@ -54,26 +83,3 @@ class TaskRepository:
         with get_session() as session:
             session.delete(task)
             session.commit()
-
-    def get_pending_tasks(self):
-        """Obtém todas as tarefas pendentes."""
-
-        return self.list_all()
-
-
-class TaskScorer:
-
-    def score(self, task, state):
-
-        score = 0
-
-        if task.priority == Priority.HIGH:
-            score += 40
-
-        elif task.priority == Priority.MEDIUM:
-            score += 20
-
-        else:
-            score += 10
-
-        return score

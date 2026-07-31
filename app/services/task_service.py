@@ -2,8 +2,15 @@
 Serviço responsável pela gestão de tarefas.
 """
 
-from app.database.models import EnergyLevel, Priority, Task
-from app.database.repositories.task_repository import TaskRepository
+from app.database.models import (
+    EnergyLevel,
+    Priority,
+    Project,
+    Task,
+)
+from app.database.repositories.task_repository import (
+    TaskRepository,
+)
 
 
 class TaskService:
@@ -20,8 +27,8 @@ class TaskService:
         energy_level: EnergyLevel = EnergyLevel.MEDIUM,
         estimated_minutes: int = 30,
         context: str = "general",
+        project: Project | None = None,
     ) -> Task:
-        """Cria uma nova tarefa."""
 
         return self.repository.create(
             title=title,
@@ -30,9 +37,9 @@ class TaskService:
             energy_level=energy_level,
             estimated_minutes=estimated_minutes,
             context=context,
+            project=project,
         )
 
     def list_tasks(self) -> list[Task]:
-        """Lista todas as tarefas."""
 
         return self.repository.list_all()
