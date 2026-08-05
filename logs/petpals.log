@@ -161,3 +161,37 @@
 2026-07-31 20:53:14.948 | INFO     | app.core.startup:startup:12 - Connecting database...
 2026-07-31 20:53:14.950 | SUCCESS  | app.core.startup:startup:14 - Database connected
 2026-07-31 20:53:14.950 | SUCCESS  | app.core.startup:startup:16 - PetPals is ready.
+2026-08-05 21:37:56.575 | INFO     | app.core.startup:startup:9 - Loading configuration...
+2026-08-05 21:37:56.575 | SUCCESS  | app.core.startup:startup:10 - Configuration loaded
+2026-08-05 21:37:56.576 | INFO     | app.core.startup:startup:12 - Connecting database...
+2026-08-05 21:37:56.579 | SUCCESS  | app.core.startup:startup:14 - Database connected
+2026-08-05 21:37:56.579 | SUCCESS  | app.core.startup:startup:16 - PetPals is ready.
+2026-08-05 21:40:25.786 | INFO     | app.core.startup:startup:9 - Loading configuration...
+2026-08-05 21:40:25.786 | SUCCESS  | app.core.startup:startup:10 - Configuration loaded
+2026-08-05 21:40:25.787 | INFO     | app.core.startup:startup:12 - Connecting database...
+2026-08-05 21:40:25.788 | SUCCESS  | app.core.startup:startup:14 - Database connected
+2026-08-05 21:40:25.788 | SUCCESS  | app.core.startup:startup:16 - PetPals is ready.
+2026-08-05 21:55:53.774 | INFO     | test_PetLogger:<module>:3 - PetPals iniciado.
+2026-08-05 21:55:53.774 | SUCCESS  | test_PetLogger:<module>:4 - Tudo operacional.
+2026-08-05 21:55:53.774 | WARNING  | test_PetLogger:<module>:5 - Este é apenas um teste.
+2026-08-05 21:55:53.774 | ERROR    | test_PetLogger:<module>:6 - Mensagem de erro de teste.
+2026-08-05 21:55:53.857 | INFO     | test_logger:<module>:3 - PetPals iniciado.
+2026-08-05 21:55:53.858 | SUCCESS  | test_logger:<module>:4 - Tudo operacional.
+2026-08-05 21:55:53.858 | WARNING  | test_logger:<module>:5 - Este é apenas um teste.
+2026-08-05 21:55:53.858 | ERROR    | test_logger:<module>:6 - Mensagem de erro de teste.
+2026-08-05 22:03:53.920 | INFO     | test_PetLogger:<module>:3 - PetPals iniciado.
+2026-08-05 22:03:53.921 | SUCCESS  | test_PetLogger:<module>:4 - Tudo operacional.
+2026-08-05 22:03:53.921 | WARNING  | test_PetLogger:<module>:5 - Este é apenas um teste.
+2026-08-05 22:03:53.921 | ERROR    | test_PetLogger:<module>:6 - Mensagem de erro de teste.
+2026-08-05 22:03:53.989 | INFO     | test_logger:<module>:3 - PetPals iniciado.
+2026-08-05 22:03:53.989 | SUCCESS  | test_logger:<module>:4 - Tudo operacional.
+2026-08-05 22:03:53.990 | WARNING  | test_logger:<module>:5 - Este é apenas um teste.
+2026-08-05 22:03:53.990 | ERROR    | test_logger:<module>:6 - Mensagem de erro de teste.
+2026-08-05 22:12:33.010 | INFO     | test_PetLogger:<module>:3 - PetPals iniciado.
+2026-08-05 22:12:33.010 | SUCCESS  | test_PetLogger:<module>:4 - Tudo operacional.
+2026-08-05 22:12:33.010 | WARNING  | test_PetLogger:<module>:5 - Este é apenas um teste.
+2026-08-05 22:12:33.010 | ERROR    | test_PetLogger:<module>:6 - Mensagem de erro de teste.
+2026-08-05 22:12:33.020 | INFO     | test_logger:<module>:3 - PetPals iniciado.
+2026-08-05 22:12:33.020 | SUCCESS  | test_logger:<module>:4 - Tudo operacional.
+2026-08-05 22:12:33.020 | WARNING  | test_logger:<module>:5 - Este é apenas um teste.
+2026-08-05 22:12:33.020 | ERROR    | test_logger:<module>:6 - Mensagem de erro de teste.

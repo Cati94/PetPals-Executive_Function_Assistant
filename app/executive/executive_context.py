@@ -11,3 +11,12 @@ class ExecutiveContext:
     max_tasks: int = 3
     breaks: bool = False
     cognitive_load: str = "normal"
+
+
+recommended_project = None
+
+recommended_task = None
+
+reason = ""
+
+next_step = ""
