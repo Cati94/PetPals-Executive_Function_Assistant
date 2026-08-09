@@ -1,22 +1,21 @@
+"""
+Contexto executivo calculado pelo PetPals.
+"""
+
 from dataclasses import dataclass
 
 
 @dataclass
 class ExecutiveContext:
-    """
-    Contexto calculado pelo Executive Engine.
-    """
+    """Contexto calculado pelo Decision Engine."""
 
     task_size: str = "normal"
     max_tasks: int = 3
     breaks: bool = False
     cognitive_load: str = "normal"
 
+    recommended_project: object | None = None
+    recommended_task: object | None = None
 
-recommended_project = None
-
-recommended_task = None
-
-reason = ""
-
-next_step = ""
+    reason: str = ""
+    next_step: str = ""

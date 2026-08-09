@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
@@ -40,6 +42,7 @@ class TaskRepository:
             session.add(task)
             session.commit()
             session.refresh(task)
+
             return task
 
     def get_by_id(self, task_id: int) -> Task | None:
@@ -56,7 +59,6 @@ class TaskRepository:
         """Lista todas as tarefas."""
 
         with get_session() as session:
-
             stmt = (
                 select(Task).options(joinedload(Task.project)).order_by(Task.created_at)
             )
@@ -67,7 +69,6 @@ class TaskRepository:
         """Obtém todas as tarefas pendentes."""
 
         with get_session() as session:
-
             stmt = (
                 select(Task)
                 .options(joinedload(Task.project))
@@ -77,9 +78,37 @@ class TaskRepository:
 
             return list(session.scalars(stmt).all())
 
-    def delete(self, task: Task) -> None:
-        """Remove uma tarefa."""
+    def complete(self, task_id: int) -> Task | None:
+        """Marca uma tarefa como concluída."""
 
         with get_session() as session:
+            stmt = (
+                select(Task).options(joinedload(Task.project)).where(Task.id == task_id)
+            )
+
+            task = session.scalar(stmt)
+
+            if task is None:
+                return None
+
+            task.status = TaskStatus.DONE
+            task.completed_at = datetime.now()
+
+            session.commit()
+            session.refresh(task)
+
+            return task
+
+    def delete(self, task_id: int) -> bool:
+        """Remove uma tarefa pelo ID."""
+
+        with get_session() as session:
+            task = session.get(Task, task_id)
+
+            if task is None:
+                return False
+
             session.delete(task)
             session.commit()
+
+            return True

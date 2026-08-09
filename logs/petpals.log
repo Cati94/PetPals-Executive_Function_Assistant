@@ -195,3 +195,8 @@
 2026-08-05 22:12:33.020 | SUCCESS  | test_logger:<module>:4 - Tudo operacional.
 2026-08-05 22:12:33.020 | WARNING  | test_logger:<module>:5 - Este é apenas um teste.
 2026-08-05 22:12:33.020 | ERROR    | test_logger:<module>:6 - Mensagem de erro de teste.
+2026-08-09 21:55:22.888 | INFO     | app.core.startup:startup:9 - Loading configuration...
+2026-08-09 21:55:22.889 | SUCCESS  | app.core.startup:startup:10 - Configuration loaded
+2026-08-09 21:55:22.889 | INFO     | app.core.startup:startup:12 - Connecting database...
+2026-08-09 21:55:22.891 | SUCCESS  | app.core.startup:startup:14 - Database connected
+2026-08-09 21:55:22.891 | SUCCESS  | app.core.startup:startup:16 - PetPals is ready.
