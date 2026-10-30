@@ -1,0 +1,107 @@
+"""Interface web local do PetPals."""
+
+from flask import Flask, redirect, render_template, request, url_for, send_from_directory
+
+from app.core.startup import startup
+from app.database.models import EnergyLevel, Priority, TaskStatus
+from app.database.repositories.project_repository import ProjectRepository
+from app.database.repositories.task_repository import TaskRepository
+
+app = Flask(__name__)
+
+
+@app.get("/service-worker.js")
+def service_worker():
+    return send_from_directory(
+        app.static_folder,
+        "service-worker.js",
+        mimetype="application/javascript",
+    )
+
+task_repository = TaskRepository()
+project_repository = ProjectRepository()
+
+
+@app.route("/")
+def dashboard():
+    all_tasks = task_repository.list_all()
+    all_projects = project_repository.list_all()
+
+    pending_tasks = [
+        task for task in all_tasks
+        if task.status != TaskStatus.DONE
+    ]
+    completed_count = sum(
+        1 for task in all_tasks
+        if task.status == TaskStatus.DONE
+    )
+
+    return render_template(
+        "index.html",
+        tasks=pending_tasks,
+        projects=[project for project in all_projects if project.active],
+        completed_count=completed_count,
+        priorities=list(Priority),
+        energy_levels=list(EnergyLevel),
+    )
+
+
+@app.post("/tasks/create")
+def create_task():
+    title = request.form.get("title", "").strip()
+    description = request.form.get("description", "").strip()
+    context = request.form.get("context", "general").strip() or "general"
+
+    if not title:
+        return redirect(url_for("dashboard"))
+
+    try:
+        priority = Priority(request.form.get("priority", "medium"))
+        energy_level = EnergyLevel(
+            request.form.get("energy_level", "medium")
+        )
+        estimated_minutes = int(
+            request.form.get("estimated_minutes", "30")
+        )
+        if estimated_minutes < 1 or estimated_minutes > 1440:
+            raise ValueError("A duração deve estar entre 1 e 1440 minutos.")
+
+        project_id_raw = request.form.get("project_id", "").strip()
+        project = None
+
+        if project_id_raw:
+            project_id = int(project_id_raw)
+            project = next(
+                (
+                    item for item in project_repository.list_all()
+                    if item.id == project_id and item.active
+                ),
+                None,
+            )
+            if project is None:
+                raise ValueError("Projeto inválido.")
+
+        task_repository.create(
+            title=title,
+            description=description,
+            priority=priority,
+            energy_level=energy_level,
+            estimated_minutes=estimated_minutes,
+            context=context,
+            project=project,
+        )
+    except (ValueError, TypeError):
+        return redirect(url_for("dashboard"))
+
+    return redirect(url_for("dashboard"))
+
+
+@app.post("/tasks/<int:task_id>/complete")
+def complete_task(task_id):
+    task_repository.complete(task_id)
+    return redirect(url_for("dashboard"))
+
+
+if __name__ == "__main__":
+    startup()
+    app.run(host="0.0.0.0", port=5000, debug=False)

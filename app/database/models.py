@@ -1,3 +1,4 @@
+
 """
 Modelos da base de dados do PetPals.
 """
@@ -10,6 +11,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
+    JSON,
     String,
     Text,
 )
@@ -22,7 +24,6 @@ from app.database.database import Base
 # ==========================================================
 # ENUMS
 # ==========================================================
-
 
 class Priority(str, Enum):
     LOW = "low"
@@ -46,47 +47,25 @@ class TaskStatus(str, Enum):
 # SYSTEM INFO
 # ==========================================================
 
-
 class SystemInfo(Base):
     __tablename__ = "system_info"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-
-    key: Mapped[str] = mapped_column(
-        String(100),
-        unique=True,
-    )
-
-    value: Mapped[str] = mapped_column(
-        String(255),
-    )
+    key: Mapped[str] = mapped_column(String(100), unique=True)
+    value: Mapped[str] = mapped_column(String(255))
 
 
 # ==========================================================
 # PROJECT
 # ==========================================================
 
-
 class Project(Base):
     __tablename__ = "projects"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-
-    name: Mapped[str] = mapped_column(
-        String(100),
-        nullable=False,
-    )
-
-    description: Mapped[str] = mapped_column(
-        Text,
-        default="",
-    )
-
-    active: Mapped[bool] = mapped_column(
-        Boolean,
-        default=True,
-    )
-
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[str] = mapped_column(Text, default="")
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,
@@ -103,21 +82,12 @@ class Project(Base):
 # TASK
 # ==========================================================
 
-
 class Task(Base):
     __tablename__ = "tasks"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-
-    title: Mapped[str] = mapped_column(
-        String(200),
-        nullable=False,
-    )
-
-    description: Mapped[str] = mapped_column(
-        String(1000),
-        default="",
-    )
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str] = mapped_column(String(1000), default="")
 
     priority: Mapped[Priority] = mapped_column(
         SqlEnum(Priority),
@@ -129,19 +99,24 @@ class Task(Base):
         default=EnergyLevel.MEDIUM,
     )
 
-    estimated_minutes: Mapped[int] = mapped_column(
-        Integer,
-        default=30,
-    )
-
-    context: Mapped[str] = mapped_column(
-        String(100),
-        default="general",
-    )
+    estimated_minutes: Mapped[int] = mapped_column(Integer, default=30)
+    context: Mapped[str] = mapped_column(String(100), default="general")
 
     status: Mapped[TaskStatus] = mapped_column(
         SqlEnum(TaskStatus),
         default=TaskStatus.TODO,
+    )
+
+    steps: Mapped[list[str]] = mapped_column(
+        JSON,
+        default=list,
+        nullable=False,
+    )
+
+    current_step: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False,
     )
 
     created_at: Mapped[datetime] = mapped_column(

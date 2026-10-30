@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetPals | O teu assistente pessoal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="container">
+        <header class="hero">
+            <p class="eyebrow">O TEU ASSISTENTE PESSOAL</p>
+            <h1>Olá! Bem-vinda ao PetPals.</h1>
+            <p>Um passo de cada vez. Vamos encontrar o que faz sentido para ti hoje.</p>
+        </header>
+
+        <section class="stats">
+            <article class="stat-card">
+                <span>Tarefas por concluir</span>
+                <strong>{{ tasks|length }}</strong>
+            </article>
+            <article class="stat-card">
+                <span>Tarefas concluídas</span>
+                <strong>{{ completed_count }}</strong>
+            </article>
+            <article class="stat-card">
+                <span>Projetos ativos</span>
+                <strong>{{ projects|length }}</strong>
+            </article>
+        </section>
+<section class="section">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">NOVA TAREFA</p>
+            <h2>O que precisas de fazer?</h2>
+        </div>
+    </div>
+
+    <form method="post" action="{{ url_for('create_task') }}" class="task-form">
+        <label for="title">Título *</label>
+        <input id="title" name="title" type="text"
+               maxlength="200" required
+               placeholder="Ex.: estudar Python">
+
+        <label for="description">Descrição</label>
+        <textarea id="description" name="description" rows="3"
+                  placeholder="Podes acrescentar detalhes..."></textarea>
+
+        <div class="form-grid">
+            <div>
+                <label for="priority">Prioridade</label>
+                <select id="priority" name="priority">
+                    <option value="low">Baixa</option>
+                    <option value="medium" selected>Média</option>
+                    <option value="high">Alta</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="energy_level">Energia necessária</label>
+                <select id="energy_level" name="energy_level">
+                    <option value="low">Baixa</option>
+                    <option value="medium" selected>Média</option>
+                    <option value="high">Alta</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="estimated_minutes">Duração (minutos)</label>
+                <input id="estimated_minutes" name="estimated_minutes"
+                       type="number" min="1" max="1440" value="30" required>
+            </div>
+        </div>
+
+        <label for="project_id">Projeto (opcional)</label>
+        <select id="project_id" name="project_id">
+            <option value="">Sem projeto</option>
+            {% for project in projects %}
+                <option value="{{ project.id }}">{{ project.name }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="hidden" name="context" value="general">
+
+        <button type="submit" class="complete-button">Adicionar tarefa</button>
+    </form>
+</section>
+        <section class="section">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">O TEU DIA</p>
+                    <h2>Próximas tarefas</h2>
+                </div>
+            </div>
+
+            {% if tasks %}
+                <div class="task-list">
+                    {% for task in tasks %}
+                        <article class="task-card">
+                            <div class="task-content">
+                                <h3>{{ task.title }}</h3>
+
+                                {% if task.description %}
+                                    <p>{{ task.description }}</p>
+                                {% endif %}
+
+                                <div class="task-meta">
+                                    <span>Prioridade: {{ task.priority.value }}</span>
+                                    <span>Energia: {{ task.energy_level.value }}</span>
+
+                                    {% if task.estimated_minutes %}
+                                        <span>{{ task.estimated_minutes }} min</span>
+                                    {% endif %}
+
+                                    {% if task.project %}
+                                        <span>{{ task.project.name }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <form method="post"
+                                  action="{{ url_for('complete_task', task_id=task.id) }}">
+                                <button type="submit" class="complete-button">
+                                    Concluir
+                                </button>
+                            </form>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>Está tudo em dia!</h3>
+                    <p>Não tens tarefas pendentes neste momento.</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="section">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">EM DESENVOLVIMENTO</p>
+                    <h2>Os teus projetos</h2>
+                </div>
+            </div>
+
+            {% if projects %}
+                <div class="project-grid">
+                    {% for project in projects %}
+                        <article class="project-card">
+                            <h3>{{ project.name }}</h3>
+                            {% if project.description %}
+                                <p>{{ project.description }}</p>
+                            {% else %}
+                                <p>Um projeto à tua medida.</p>
+                            {% endif %}
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>Ainda não existem projetos ativos para apresentar.</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <footer>
+            <p>PetPals · Organizar sem esquecer que também precisas de descansar.</p>
+        </footer>
+    </main>
+</body>
+</html>

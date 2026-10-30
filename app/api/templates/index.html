@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetPals | O teu assistente pessoal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#7775b8">
+</head>
+<body>
+    <div class="theme-bar" aria-label="Preferências de aparência">
+        <label class="theme-label" for="theme-select">Aparência</label>
+        <select id="theme-select" class="theme-select">
+            <option value="auto">Automático</option>
+            <option value="light">Modo claro</option>
+            <option value="dark">Modo escuro</option>
+        </select>
+    </div>
+
+    <main class="container">
+        <header class="hero">
+            <p class="eyebrow">O TEU ASSISTENTE PESSOAL</p>
+            <h1>Olá! Bem-vinda ao PetPals.</h1>
+            <p>Um passo de cada vez. Vamos encontrar o que faz sentido para ti hoje.</p>
+        </header>
+
+        <section class="stats">
+            <article class="stat-card">
+                <span>Tarefas por concluir</span>
+                <strong>{{ tasks|length }}</strong>
+            </article>
+            <article class="stat-card">
+                <span>Tarefas concluídas</span>
+                <strong>{{ completed_count }}</strong>
+            </article>
+            <article class="stat-card">
+                <span>Projetos ativos</span>
+                <strong>{{ projects|length }}</strong>
+            </article>
+        </section>
+
+        <section class="section">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">CHECK-IN DIÁRIO</p>
+                    <h2>Como estás neste momento?</h2>
+                    <p>Não precisas de estar no teu melhor para começar.</p>
+                </div>
+            </div>
+
+            <form method="post" action="{{ url_for('assessment') }}"
+                  class="task-form assessment-form">
+                {% set energy_value = state.energy.value if state else 3 %}
+                {% set mood_value = state.mood.value if state else 3 %}
+                {% set focus_value = state.focus.value if state else 3 %}
+
+                <label for="energy">Energia</label>
+                <select id="energy" name="energy" required>
+                    <option value="1" {% if energy_value == 1 %}selected{% endif %}>Muito baixa</option>
+                    <option value="2" {% if energy_value == 2 %}selected{% endif %}>Baixa</option>
+                    <option value="3" {% if energy_value == 3 %}selected{% endif %}>Normal</option>
+                    <option value="4" {% if energy_value == 4 %}selected{% endif %}>Alta</option>
+                    <option value="5" {% if energy_value == 5 %}selected{% endif %}>Muito alta</option>
+                </select>
+
+                <label for="mood">Humor</label>
+                <select id="mood" name="mood" required>
+                    <option value="1" {% if mood_value == 1 %}selected{% endif %}>Muito mau</option>
+                    <option value="2" {% if mood_value == 2 %}selected{% endif %}>Mau</option>
+                    <option value="3" {% if mood_value == 3 %}selected{% endif %}>Normal</option>
+                    <option value="4" {% if mood_value == 4 %}selected{% endif %}>Bom</option>
+                    <option value="5" {% if mood_value == 5 %}selected{% endif %}>Muito bom</option>
+                </select>
+
+                <label for="focus">Foco</label>
+                <select id="focus" name="focus" required>
+                    <option value="1" {% if focus_value == 1 %}selected{% endif %}>Muito baixo</option>
+                    <option value="2" {% if focus_value == 2 %}selected{% endif %}>Baixo</option>
+                    <option value="3" {% if focus_value == 3 %}selected{% endif %}>Normal</option>
+                    <option value="4" {% if focus_value == 4 %}selected{% endif %}>Alto</option>
+                    <option value="5" {% if focus_value == 5 %}selected{% endif %}>Muito alto</option>
+                </select>
+
+                <button type="submit" class="complete-button">
+                    {% if state %}Atualizar avaliação{% else %}Encontrar a próxima ação{% endif %}
+                </button>
+            </form>
+        </section>
+
+        <section class="section next-action-section">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">O TEU PRÓXIMO PASSO</p>
+                    <h2>Vamos por partes</h2>
+                </div>
+            </div>
+
+            {% if not state %}
+                <div class="empty-state">
+                    <h3>Começamos pelo teu estado atual.</h3>
+                    <p>Preenche a avaliação acima para receberes uma sugestão ajustada ao teu nível de energia.</p>
+                </div>
+            {% elif recommendation %}
+                <article class="next-action-card">
+                    <p class="eyebrow">
+                        {% if recommendation.status.value == "in_progress" %}
+                            TAREFA EM CURSO
+                        {% else %}
+                            TAREFA SUGERIDA
+                        {% endif %}
+                    </p>
+
+                    <h3>{{ recommendation.title }}</h3>
+
+                    {% if recommendation.description %}
+                        <p>{{ recommendation.description }}</p>
+                    {% endif %}
+
+                    <div class="task-meta">
+                        <span>{{ recommendation.estimated_minutes }} min estimados</span>
+                        <span>Energia: {{ recommendation.energy_level.value }}</span>
+                        {% if recommendation.project %}
+                            <span>{{ recommendation.project.name }}</span>
+                        {% endif %}
+                    </div>
+
+                    {% if recommendation.steps %}
+                        {% set step_index = recommendation.current_step %}
+                        {% if step_index < recommendation.steps|length %}
+                            <div class="step-panel">
+                                <p class="eyebrow">
+                                    PASSO {{ step_index + 1 }} DE {{ recommendation.steps|length }}
+                                </p>
+                                <p class="current-step">
+                                    {{ recommendation.steps[step_index] }}
+                                </p>
+                                <div class="progress-track"
+                                     role="progressbar"
+                                     aria-valuemin="0"
+                                     aria-valuemax="{{ recommendation.steps|length }}"
+                                     aria-valuenow="{{ step_index + 1 }}">
+                                    <div class="progress-fill"
+                                         style="width: {{ ((step_index + 1) / recommendation.steps|length * 100)|round }}%">
+                                    </div>
+                                </div>
+                                <form method="post"
+                                      action="{{ url_for('continue_task', task_id=recommendation.id) }}">
+                                    <button type="submit" class="complete-button">
+                                        Continuar
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <p>Esta tarefa ainda não tem passos definidos.</p>
+                        <form method="post"
+                              action="{{ url_for('continue_task', task_id=recommendation.id) }}">
+                            <button type="submit" class="complete-button">
+                                Preparar e continuar
+                            </button>
+                        </form>
+                    {% endif %}
+                </article>
+            {% else %}
+                <div class="empty-state">
+                    <h3>Não há tarefas pendentes adequadas.</h3>
+                    <p>Podes criar uma tarefa ou rever a lista existente.</p>
+                    <a class="complete-button button-link" href="{{ url_for('new_task') }}">
+                        Criar tarefa
+                    </a>
+                </div>
+            {% endif %}
+
+            {% if state %}
+                <form method="post" action="{{ url_for('reset_assessment') }}">
+                    <button type="submit" class="secondary-button">
+                        Fazer nova avaliação mais tarde
+                    </button>
+                </form>
+            {% endif %}
+        </section>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; width: 100%; margin: 24px 0;">
+
+    <a href="{{ url_for('new_task') }}"
+       style="box-sizing: border-box; display: flex; align-items: center; gap: 14px; min-width: 0; padding: 20px; border: 1px solid #39445f; border-radius: 14px; background: var(--card-background, #20283b); color: inherit; text-decoration: none;">
+
+        <span style="display: flex; align-items: center; justify-content: center; flex: 0 0 44px; height: 44px; border-radius: 12px; background: #343c5a; font-size: 25px;">＋</span>
+
+        <span>
+            <strong style="display: block;">Acrescentar tarefa</strong>
+            <small style="display: block; margin-top: 5px; opacity: 0.75;">Criar uma nova tarefa</small>
+        </span>
+    </a>
+
+    <a href="{{ url_for('tasks_page') }}"
+       style="box-sizing: border-box; display: flex; align-items: center; gap: 14px; min-width: 0; padding: 20px; border: 1px solid #39445f; border-radius: 14px; background: var(--card-background, #20283b); color: inherit; text-decoration: none;">
+
+        <span style="display: flex; align-items: center; justify-content: center; flex: 0 0 44px; height: 44px; border-radius: 12px; background: #343c5a; font-size: 25px;">☷</span>
+
+        <span>
+            <strong style="display: block;">Ver tarefas</strong>
+            <small style="display: block; margin-top: 5px; opacity: 0.75;">Consultar tarefas pendentes e concluídas</small>
+        </span>
+    </a>
+
+</div>
+
+        <section class="section">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">ORGANIZAÇÃO</p>
+                    <h2>As tuas tarefas e projetos</h2>
+                </div>
+            </div>
+
+            {% if projects %}
+                <h3 class="subsection-title">Projetos ativos</h3>
+                <div class="project-grid">
+                    {% for project in projects %}
+                        <article class="project-card">
+                            <h3>{{ project.name }}</h3>
+                            <p>{{ project.description or "Um projeto à tua medida." }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </section>
+
+        <footer>
+            <p>PetPals · Organizar sem esquecer que também precisas de descansar.</p>
+        </footer>
+    </main>
+
+    <a class="floating-add" href="{{ url_for('new_task') }}"
+       aria-label="Criar nova tarefa" title="Criar nova tarefa">+</a>
+
+    <script>
+    (() => {
+        const selector = document.getElementById("theme-select");
+        if (!selector) return;
+
+        const root = document.documentElement;
+        const storageKey = "petpals-theme";
+        const systemPreference = window.matchMedia("(prefers-color-scheme: dark)");
+
+        function applyTheme(choice) {
+            root.dataset.theme = choice === "auto"
+                ? (systemPreference.matches ? "dark" : "light")
+                : choice;
+            selector.value = choice;
+        }
+
+        let savedChoice = "auto";
+        try {
+            const saved = localStorage.getItem(storageKey);
+            if (["auto", "light", "dark"].includes(saved)) {
+                savedChoice = saved;
+            }
+        } catch (_) {}
+
+        applyTheme(savedChoice);
+
+        selector.addEventListener("change", () => {
+            applyTheme(selector.value);
+            try {
+                localStorage.setItem(storageKey, selector.value);
+            } catch (_) {}
+        });
+
+        systemPreference.addEventListener("change", () => {
+            if (selector.value === "auto") applyTheme("auto");
+        });
+    })();
+
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("/service-worker.js")
+                .catch(error => console.error(
+                    "Não foi possível registar o service worker:", error
+                ));
+        });
+    }
+    </script>
+</body>
+</html>

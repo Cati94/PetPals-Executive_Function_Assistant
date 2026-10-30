@@ -1,0 +1,25 @@
+{
+  "id": "/",
+  "name": "PetPals — Assistente Pessoal",
+  "short_name": "PetPals",
+  "description": "Organizar sem esquecer que também precisas de descansar.",
+  "lang": "pt-PT",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#7775b8",
+  "background_color": "#f6f4fb",
+  "icons": [
+    {
+      "src": "/static/icons/petpals-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icons/petpals-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

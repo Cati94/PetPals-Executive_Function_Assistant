@@ -4,6 +4,7 @@ Planeador de tarefas do PetPals.
 
 from app.database.repositories.task_repository import TaskRepository
 from app.executive.decision_engine import DecisionEngine
+from app.executive.next_action import NextAction
 from app.user.user_state import UserState
 
 
@@ -21,80 +22,82 @@ class Planner:
 
         if not tasks:
             print("\n🐾 Não existem tarefas pendentes.")
-            return
+            return None
 
         context = self.decision_engine.evaluate(state)
 
-        print("\n🐾 Sugestões do PetPals")
-        print("-------------------------")
-
-        print(
-            f"Tamanho das tarefas: "
-            f"{context.task_size}"
-        )
-
-        print(
-            f"Carga cognitiva: "
-            f"{context.cognitive_load}"
-        )
-
-        print(
-            f"Máximo de tarefas: "
-            f"{context.max_tasks}"
-        )
-
-        if context.breaks:
-            print("⏸️ Recomenda-se fazer pausas.")
-
-        print()
-
-        suitable_tasks = [
-            task
-            for task in tasks
-            if self._task_is_suitable(task, state)
-        ]
+        suitable_tasks = [task for task in tasks if self._task_is_suitable(task, state)]
 
         if not suitable_tasks:
-            print(
-                "🐾 Nenhuma tarefa parece adequada "
-                "para o teu estado atual."
-            )
-            return
+            print("\n🐾 Nenhuma tarefa parece adequada " "para o teu estado atual.")
+            return None
 
-        limit = min(
-            context.max_tasks,
-            len(suitable_tasks),
+        # A primeira tarefa adequada é, por enquanto,
+        # a melhor candidata.
+        task = suitable_tasks[0]
+
+        action = self._create_next_action(
+            task,
+            context,
         )
 
-        for index, task in enumerate(
-            suitable_tasks[:limit],
-            start=1,
-        ):
-            project_name = (
-                task.project.name
-                if task.project
-                else "Sem projeto"
-            )
+        print(action)
 
-            print(
-                f"{index}. {task.title}"
-            )
+        return action
 
-            print(
-                f"   📂 Projeto: {project_name}"
-            )
+    def _create_next_action(
+        self,
+        task,
+        context,
+    ) -> NextAction:
+        """Transforma uma tarefa numa próxima ação."""
 
-            print(
-                f"   ⚡ Energia: "
-                f"{task.energy_level.value}"
-            )
+        project_name = task.project.name if task.project else "sem projeto"
 
-            print(
-                f"   ⏱️ Tempo: "
-                f"{task.estimated_minutes} min"
-            )
+        reason = (
+            f"A tarefa é adequada ao teu estado atual. " f"Projeto: {project_name}."
+        )
 
-            print()
+        confidence = self._calculate_confidence(
+            task,
+            context,
+        )
+
+        return NextAction(
+            title=task.title,
+            reason=reason,
+            estimated_minutes=task.estimated_minutes,
+            cognitive_load=context.cognitive_load,
+            confidence=confidence,
+            total_steps=1,
+            current_step=1,
+            requires_break=context.breaks,
+            show_only_next_step=True,
+        )
+
+    def _calculate_confidence(
+        self,
+        task,
+        context,
+    ) -> float:
+        """Calcula a confiança na recomendação."""
+
+        if context.task_size == "small":
+            if task.energy_level.value == "low":
+                return 0.95
+
+            return 0.80
+
+        if context.task_size == "medium":
+            if task.energy_level.value in (
+                "low",
+                "medium",
+            ):
+                return 0.90
+
+            return 0.70
+
+        return 0.85
 
     def _task_is_suitable(
         self,

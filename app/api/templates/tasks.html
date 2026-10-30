@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarefas | PetPals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+</head>
+<body>
+    <div class="theme-bar">
+        <a href="{{ url_for('dashboard') }}">← Início</a>
+        <label class="theme-label" for="theme-select">Aparência</label>
+        <select id="theme-select" class="theme-select">
+            <option value="auto">Automático</option>
+            <option value="light">Modo claro</option>
+            <option value="dark">Modo escuro</option>
+        </select>
+    </div>
+
+    <main class="container">
+        <header class="hero">
+            <p class="eyebrow">ORGANIZAÇÃO</p>
+            <h1>As tuas tarefas</h1>
+            <p>Consulta o que tens por fazer e o que já concluíste.</p>
+        </header>
+
+        <div class="section-heading">
+            <h2>Pendentes e em curso</h2>
+            <a class="complete-button button-link" href="{{ url_for('new_task') }}">Nova tarefa</a>
+        </div>
+
+        {% if tasks %}
+            <div class="task-list">
+                {% for task in tasks %}
+                    <article class="task-card">
+                        <div class="task-content">
+                            <h3>{{ task.title }}</h3>
+                            {% if task.description %}<p>{{ task.description }}</p>{% endif %}
+                            <div class="task-meta">
+                                <span>{{ task.status.value }}</span>
+                                <span>Prioridade: {{ task.priority.value }}</span>
+                                <span>Energia: {{ task.energy_level.value }}</span>
+                                <span>{{ task.estimated_minutes }} min</span>
+                                {% if task.project %}<span>{{ task.project.name }}</span>{% endif %}
+                            </div>
+                            {% if task.steps %}
+                                <p>{{ task.current_step }} de {{ task.steps|length }} passos concluídos ou ultrapassados</p>
+                            {% endif %}
+                        </div>
+                        <form method="post"
+                              action="{{ url_for('complete_task', task_id=task.id) }}">
+                            <button type="submit" class="secondary-button">Concluir tarefa</button>
+                        </form>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>Não tens tarefas pendentes.</h3>
+                <p>Podes aproveitar para descansar ou criar uma nova tarefa.</p>
+            </div>
+        {% endif %}
+
+        <section class="section">
+            <h2>Concluídas</h2>
+            {% if completed_tasks %}
+                <div class="task-list">
+                    {% for task in completed_tasks %}
+                        <article class="task-card completed-task">
+                            <div class="task-content">
+                                <h3>{{ task.title }}</h3>
+                                <span class="status-label">Concluída</span>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Ainda não há tarefas concluídas para apresentar.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <a class="floating-add" href="{{ url_for('new_task') }}"
+       aria-label="Criar nova tarefa">+</a>
+
+    <script>
+    (() => {
+        const selector = document.getElementById("theme-select");
+        const root = document.documentElement;
+        const key = "petpals-theme";
+        const system = window.matchMedia("(prefers-color-scheme: dark)");
+
+        function apply(choice) {
+            root.dataset.theme = choice === "auto"
+                ? (system.matches ? "dark" : "light") : choice;
+            selector.value = choice;
+        }
+
+        let choice = "auto";
+        try {
+            const saved = localStorage.getItem(key);
+            if (["auto", "light", "dark"].includes(saved)) choice = saved;
+        } catch (_) {}
+        apply(choice);
+
+        selector.addEventListener("change", () => {
+            apply(selector.value);
+            try { localStorage.setItem(key, selector.value); } catch (_) {}
+        });
+        system.addEventListener("change", () => {
+            if (selector.value === "auto") apply("auto");
+        });
+    })();
+    </script>
+</body>
+</html>

@@ -77,9 +77,7 @@ class Menu:
                 )
 
                 if project is None:
-                    print(
-                        "\n⚠️ Projeto não encontrado. " "A tarefa ficará sem projeto."
-                    )
+                    print("\n⚠️ Projeto não encontrado. " "A tarefa ficará sem projeto.")
 
         print("\nPrioridade")
         print("1 - Baixa")

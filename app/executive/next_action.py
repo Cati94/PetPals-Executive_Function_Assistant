@@ -1,4 +1,3 @@
-
 """
 PetPals - Next Action.
 
@@ -11,9 +10,7 @@ from dataclasses import dataclass
 
 @dataclass(slots=True)
 class NextAction:
-    """
-    Representa uma única ação recomendada.
-    """
+    """Representa uma única ação recomendada."""
 
     title: str
     reason: str
@@ -33,10 +30,7 @@ class NextAction:
         if self.total_steps <= 0:
             return 0.0
 
-        return (
-            self.current_step
-            / self.total_steps
-        ) * 100
+        return (self.current_step / self.total_steps) * 100
 
     def __str__(self) -> str:
         """Apresentação amigável da próxima ação."""

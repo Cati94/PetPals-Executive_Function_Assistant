@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova tarefa | PetPals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+</head>
+<body>
+    <div class="theme-bar">
+        <a href="{{ url_for('dashboard') }}">← Início</a>
+        <label class="theme-label" for="theme-select">Aparência</label>
+        <select id="theme-select" class="theme-select">
+            <option value="auto">Automático</option>
+            <option value="light">Modo claro</option>
+            <option value="dark">Modo escuro</option>
+        </select>
+    </div>
+
+    <main class="container">
+        <header class="hero">
+            <p class="eyebrow">NOVA TAREFA</p>
+            <h1>O que precisas de fazer?</h1>
+            <p>Não precisas de planear tudo agora. Começa pelo essencial.</p>
+        </header>
+
+        {% if error %}
+            <div class="form-error" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('new_task') }}" class="task-form">
+            <label for="title">Título *</label>
+            <input id="title" name="title" type="text"
+                   maxlength="200" required autofocus
+                   placeholder="Ex.: estudar Python">
+
+            <label for="description">Descrição</label>
+            <textarea id="description" name="description" maxlength="1000"
+                      rows="3" placeholder="Detalhes opcionais"></textarea>
+
+            <div class="form-grid">
+                <div>
+                    <label for="priority">Prioridade</label>
+                    <select id="priority" name="priority">
+                        {% for priority in priorities %}
+                            <option value="{{ priority.value }}"
+                                {% if priority.value == "medium" %}selected{% endif %}>
+                                {% if priority.value == "low" %}Baixa
+                                {% elif priority.value == "high" %}Alta
+                                {% else %}Média{% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="energy_level">Energia necessária</label>
+                    <select id="energy_level" name="energy_level">
+                        {% for level in energy_levels %}
+                            <option value="{{ level.value }}"
+                                {% if level.value == "medium" %}selected{% endif %}>
+                                {% if level.value == "low" %}Baixa
+                                {% elif level.value == "high" %}Alta
+                                {% else %}Média{% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="estimated_minutes">Duração (minutos)</label>
+                    <input id="estimated_minutes" name="estimated_minutes"
+                           type="number" min="1" max="1440" value="30" required>
+                </div>
+            </div>
+
+            <label for="project_id">Projeto (opcional)</label>
+            <select id="project_id" name="project_id">
+                <option value="">Sem projeto</option>
+                {% for project in projects %}
+                    <option value="{{ project.id }}">{{ project.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="context">Contexto</label>
+            <select id="context" name="context">
+                <option value="general">Geral</option>
+                <option value="study">Estudo</option>
+                <option value="programming">Programação</option>
+                <option value="personal">Pessoal</option>
+                <option value="health">Saúde e bem-estar</option>
+            </select>
+
+            <button type="submit" class="complete-button">Guardar tarefa</button>
+            <a href="{{ url_for('tasks_page') }}" class="cancel-link">Cancelar</a>
+        </form>
+    </main>
+
+    <script>
+    (() => {
+        const selector = document.getElementById("theme-select");
+        const root = document.documentElement;
+        const key = "petpals-theme";
+        const system = window.matchMedia("(prefers-color-scheme: dark)");
+
+        function apply(choice) {
+            root.dataset.theme = choice === "auto"
+                ? (system.matches ? "dark" : "light") : choice;
+            selector.value = choice;
+        }
+
+        let choice = "auto";
+        try {
+            const saved = localStorage.getItem(key);
+            if (["auto", "light", "dark"].includes(saved)) choice = saved;
+        } catch (_) {}
+        apply(choice);
+
+        selector.addEventListener("change", () => {
+            apply(selector.value);
+            try { localStorage.setItem(key, selector.value); } catch (_) {}
+        });
+        system.addEventListener("change", () => {
+            if (selector.value === "auto") apply("auto");
+        });
+    })();
+    </script>
+</body>
+</html>

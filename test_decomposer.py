@@ -1,8 +1,19 @@
 from app.decomposer.decomposer import TaskDecomposer
 
+
+class FakeTask:
+    def __init__(self, title):
+        self.title = title
+
+
 decomposer = TaskDecomposer()
 
-steps = decomposer.decompose("Programar PetPals")
+task = FakeTask("Trabalhar nos bugs do FireRisk")
 
-for index, step in enumerate(steps, start=1):
-    print(f"{index}. {step}")
+steps = decomposer.decompose(task)
+
+print("\n🐾 Decomposição da tarefa")
+print("-------------------------")
+
+for number, step in enumerate(steps, start=1):
+    print(f"{number}. {step}")
